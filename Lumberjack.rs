@@ -23,7 +23,7 @@ pub mod lumberjack {
 
 }
 
-pub fn chop_tree(ctx: Context<ChopTree>) -> Result<()> {
+pub fn chop_tree(mut ctx: Context<ChopTree>) -> Result<()> {
     let account = &mut ctx.accounts;
     update_energy(account)?;
 
@@ -32,12 +32,30 @@ pub fn chop_tree(ctx: Context<ChopTree>) -> Result<()> {
     }
 
     ctx.accounts.player.wood = ctx.accounts.player.wood + 1;
-    ctx.accounts.player.energy = ctx.accounts.player.energy -1;
+    ctx.accounts.player.energy = ctx.accounts.player.energy - 1;
 
     Ok(())
 }
+pub fn update_energy(ctx: &mut ChopTree) -> Result<()> {
+    let mut time_passed: i64 = &Clock::get()?.unix_timestamp - &ctx.player.last_login;
+    let mut time_spent: i64 = 0;
+    while time_passed > TIME_TO_REFILL_ENERGY {
+        ctx.player.energy = ctx.player.energy + 1;
+        time_passed -= TIME_TO_REFILL_ENERGY;
+        time_spent += TIME_TO_REFILL_ENERGY;
+        if ctx.player.energy >= MAX_ENERGY {
+            break;
+        }
+    }
 
-pub fn update_energy(ctx:)
+    if ctx.player.energy >= MAX_ENERGY {
+        ctx.player.last_login = Clock::get()?.unix_timestamp;
+    } else {
+        ctx.player.last_login += time_spent;
+    }
+
+    Ok(())
+}
 
 #[derive(Accounts)]
 pub struct ChopTree<'info> {
