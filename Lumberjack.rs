@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("4ayoaXt8odfcNneUuZPeiYQfSCDH4XyG8iEkaPK2pUHx");
+declare_id!("8m8j4Bde12bh3SDcWqiDDmBVB8UJChrhCPvfXD8z99RC");
 
 const MAX_ENERGY: u64 = 5;
 const TIME_TO_REFILL_ENERGY: i64 = 30;
